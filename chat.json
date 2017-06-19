@@ -1,0 +1,184 @@
+{
+  "config": {
+    "debug": true,
+    "behaviour": {
+      "autoScroll": false,
+      "autoScrollAfterFirstAnswer": true,
+      "autoResize": true,
+      "showTypingDots": true,
+      "useEmoji": true,
+      "useInputs": true,
+      "useLanguages": false,
+      "autoDetectLanguage": false
+    },
+    "times": {
+      "delay": {
+        "overall": 1000,
+        "showAnswer": 1000,
+        "botsTalk": 800
+      }
+    },
+    "classes": {
+      "chatWrap": "chat-wrap"
+    }
+  },
+  "talk": {
+    "init": {
+      "talks": [
+        "Hi there :emoji:smiley:, it's me!",
+        "Do you feel like talking?"
+      ],
+      "answers": [
+        "Yeah, sure!",
+        "Naah, I just want to look around.."
+      ],
+      "next": [
+        "talking1",
+        "donttalk1"
+      ]
+    },
+    "talking1": {
+      "talks": [
+        "Alright then...",
+        "Shall I tell something about me?"
+      ],
+      "answers": [
+        "Yes please!",
+        "Nope."
+      ],
+      "next": [
+        "aboutme1",
+        "frontendbackend1"
+      ]
+    },
+    "donttalk1": {
+      "talks": [
+        "Hmm.. okay! You will tell me, if you feel like talking, alright :emoji:wink:"
+      ],
+      "answers": [
+        "I want to talk now!",
+        "Okay. Bye.."
+      ],
+      "next": [
+        "talking1",
+        ""
+      ]
+    },
+    "aboutme1": {
+      "talks": [
+        "I'm glad to hear.. Well! I am a web developer guy from Nuremberg!",
+        "Listing up my technical skills here again would be boring..",
+        "That's why it might be interesting for you, to see some projects..",
+        "Am I right?"
+      ],
+      "answers": [
+        "Yes, you are!",
+        "Naah.."
+      ],
+      "next": [
+        "projects1a",
+        "frontendbackend1"
+      ]
+    },
+    "frontendbackend1": {
+      "talks": [
+        "Do you want to talk about Frontend and Backend stuff?"
+      ],
+      "answers": [
+        "That's way better..",
+        "Naah.. :emoji:confused:"
+      ],
+      "next": [
+        "frontendbackend2",
+        "yourself1"
+      ]
+    },
+    "30": {
+      "talks": [
+        "Brilliant!",
+        "Please grab your phone and just call me :emoji:phone:!",
+        "+49 (0) 151 20 42 1335"
+      ],
+      "answers": []
+    },
+    "projects1a": {
+      "talks": [
+        "I've worked for some companies.. Maybe you've heard of some of them..",
+        "There was HOTELDE and HRS for example. I was there as a fullstack developer more or less..",
+        "I've done something for bauhaus and siemens as well,..",
+        "I did some Typo3 for the Bertelsmann Printing Group",
+        "Yeap.. Enough examples?"
+      ],
+      "answers": [
+        "Give me more",
+        "Nope.."
+      ],
+      "next": [
+        "projects1b",
+        "42"
+      ]
+    },
+    "projects1b": {
+      "talks": [
+        "Hmm... what else might be interesting for you?",
+        "Maybe I'll show you some of my personal projects..",
+        "There is a CronJob tool called www.cronjobr.de (well, obvious name :emoji:smiley:)",
+        "If you need some eBay support, there is www.apprex.de",
+        "Shortlinks may be created by www.ap-1.info",
+        "Anything else, you want to see?"
+      ],
+      "answers": [
+        "Yes please!",
+        "No"
+      ],
+      "next": [
+        "projects1c",
+        "42"
+      ]
+    },
+    "projects1c": {
+      "talks": [
+        "This conversation is pretty one-sided I think.. :emoji:satisfied:",
+        "I do some lectures at different universities!",
+        "Maybe you have heared about the IBS Nuremberg?",
+        "I also do trainings for companies! Is this something for you?"
+      ],
+      "answers": [
+        "Lets have a talk",
+        "Naah, not really.."
+      ],
+      "next": [
+        "contact1",
+        "projects2"
+      ]
+    },
+    "projects2": {
+      "talks": [
+        "Is there a project I may support you?"
+      ],
+      "answers": [
+        "Yes, there might be one",
+        "Nope.."
+      ],
+      "next": [
+        "contact1",
+        ""
+      ]
+    },
+    "frontendbackend2": {
+      "talks": [
+        "Cool!",
+        "In my opinion, a web developer today *needs* to have knowledge in both worlds!",
+        "How about you?"
+      ],
+      "answers": [
+        "Better!",
+        "Nope.."
+      ],
+      "next": [
+        "",
+        ""
+      ]
+    }
+  }
+}
