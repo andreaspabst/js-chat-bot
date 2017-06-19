@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+
+    </style>
+    <title>Simple Chat</title>
+</head>
+<body>
+<h1>Chat</h1>
+<div id="chat"></div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="../src/js/chat.js"></script>
+<script type="text/javascript">
+    var chat = new Chat();
+    var settings = {
+        config: {
+            debug: true,
+            behaviour: {
+                showTypingDots: false
+            }
+        }, talk: {
+            init: {
+                talks: ["Hello","World"],
+                answers: ["Okay"]
+            }
+        }
+    };
+    chat.init(settings);
+</script>
+</html>
