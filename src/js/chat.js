@@ -23,13 +23,14 @@ function Chat() {
             answerPrefix: "answer-"  // prefix of answer link "prefix-0", "prefix-1",...
         },
         classes: {
-            chatWrap: "chat-wrap",                      // wrapper of the chat bubbles
+            answer: "chat-answer",                      // class of answer link
+            answerWrap: "chat-answer-select",           // class of answer box
             bubbleWrap: "chat-bubble",                  // class of any bubble
             bubble: "chat-bubble-msg",                  // class of any bubble
             bubbleBot: "chat-bubble-msg-me",            // class of bot bubble
             bubbleVisitor: "chat-bubble-msg-visitor",   // class of visitors answer bubble
-            answer: "chat-answer",                      // class of answer link
-            answerWrap: "chat-answer-select"            // class of answer box
+            chatWrap: "chat-wrap",                      // wrapper of the chat bubbles
+            emojiPrefix: "em em-"                       // emoji class <i class="prefix-emoji"></i>
         },
         times: {
             delay: {
