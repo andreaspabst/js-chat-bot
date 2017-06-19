@@ -422,7 +422,7 @@ function Chat() {
             var emojiRegex = /:emoji:([A-z]+):/;
             emojiFields = emojiRegex.exec(text);
             if (emojiFields  != null) {
-                text = text.replace(emojiFields[0], '<i class="em em-'+emojiFields[1]+'"></i>');
+                text = text.replace(emojiFields[0], '<i class="'+this.configuration.classes.emojiPrefix+'-'+emojiFields[1]+'"></i>');
             }
         }
 
