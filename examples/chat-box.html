@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: "Helvetica Neue";
+            font-size: 16px;
+        }
+
+        #bottom-bar {
+            position: fixed;
+            bottom: 0;
+            background-color: #ccc;
+            height: 50px;
+            width: 100%;
+            left: 0;
+        }
+
+        #bottom-bar-chat-window {
+            background-color: #efefef;
+            width: 300px;
+            position: absolute;
+            right: 70px;
+            bottom: 50px;
+            padding-top: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            max-height: 420px;
+            min-height: 420px;
+            overflow: auto;
+        }
+
+        #box-caption {
+            margin-left: -10px;
+            margin-right: -10px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: #006699;
+            color: #fff;
+        }
+
+        #chat {
+
+        }
+
+        .chat-bubble {
+            clear: both;
+            min-width: 1px;
+        }
+
+        .chat-bubble-msg {
+            margin-bottom: 6px;
+            padding: 4px;
+        }
+
+        .chat-bubble-msg-me {
+            background-color: #ccc;
+            display: table;
+        }
+
+        .chat-bubble-msg-visitor {
+            display: table;
+            background-color: #555;
+            color: #fff;
+            float: right;
+        }
+
+        .chat-bubble-msg-visitor::after {
+            clear: both;
+        }
+
+        .chat-answer-select {
+            position: absolute;
+            bottom: 10px;
+            margin-top: 14px;
+        }
+
+        .chat-answer:link, .chat-answer:visited {
+            background-color: #555;
+            text-decoration: none;
+            color: #fff;
+            padding: 4px;
+            margin-right: 3px;
+        }
+
+        .chat-answer:hover, .chat-answer:active {
+            background-color: #0099CC;
+        }
+    </style>
+    <title>Simple Chat</title>
+</head>
+<body>
+<h1>Chat</h1>
+<div id="bottom-bar">
+    <div id="bottom-bar-chat-window">
+        <div id="box-caption">Hey, let's talk!</div>
+        <div id="chat"></div>
+    </div>
+</div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="../src/js/chat.js"></script>
+<script type="text/javascript">
+    var chat = new Chat();
+    var settings = {
+        config: {
+            debug: false,
+            behaviour: {
+                showTypingDots: false
+            }
+        }, talk: {
+            init: {
+                talks: ["Hello World","It's me, I'm your Chat Bot"],
+                answers: ["What's your name?", "I want to do this!"],
+                next: ["myName", "git"]
+            },
+            myName: {
+                talks: ["My Name is js-site-chat-bot.", "Do you want to try me?"],
+                answers: ["Yes, sure!"],
+                next: ["git"]
+            },
+            git: {
+                talks: ["Head over to https://github.com/andreaspabst/js-site-chat-bot"]
+            }
+        }
+    };
+    chat.init(settings);
+</script>
+</html>
