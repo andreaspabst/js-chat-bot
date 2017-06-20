@@ -3,7 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <style>
+        body {
+            font-family: "Helvetica Neue";
+            font-size: 16px;
+        }
 
+        #chat {
+            width: 300px;
+        }
+
+        .chat-bubble {
+            clear: both;
+            min-width: 1px;
+        }
+
+        .chat-bubble-msg {
+            margin-bottom: 6px;
+            padding: 4px;
+        }
+
+        .chat-bubble-msg-me {
+            background-color: #ccc;
+            display: table;
+        }
+
+        .chat-bubble-msg-visitor {
+            display: table;
+            background-color: #555;
+            color: #fff;
+            float: right;
+        }
+
+        .chat-bubble-msg-visitor::after {
+            clear: both;
+        }
+
+        .chat-answer-select {
+            margin-top: 14px;
+        }
+
+        .chat-answer:link, .chat-answer:visited {
+            background-color: #555;
+            text-decoration: none;
+            color: #fff;
+            padding: 4px;
+            margin-right: 3px;
+        }
+
+        .chat-answer:hover, .chat-answer:active {
+            background-color: #0099CC;
+        }
     </style>
     <title>Simple Chat</title>
 </head>
@@ -20,14 +69,23 @@
     var chat = new Chat();
     var settings = {
         config: {
-            debug: true,
+            debug: false,
             behaviour: {
                 showTypingDots: false
             }
         }, talk: {
             init: {
-                talks: ["Hello","World"],
-                answers: ["Okay"]
+                talks: ["Hello World","It's me, I'm your Chat Bot"],
+                answers: ["What's your name?", "I want to do this!"],
+                next: ["myName", "git"]
+            },
+            myName: {
+                talks: ["My Name is js-site-chat-bot.", "Do you want to try me?"],
+                answers: ["Yes, sure!"],
+                next: ["git"]
+            },
+            git: {
+                talks: ["Head over to https://github.com/andreaspabst/js-site-chat-bot"]
             }
         }
     };

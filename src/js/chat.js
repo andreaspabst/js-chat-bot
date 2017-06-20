@@ -353,7 +353,13 @@ function Chat() {
 
             // Generate answer elements with onclick function
             var $answerElem = $("<div>"  + answerContent + "</div>").click(function(el) {
-                var target = $(el.target).context;
+                if (typeof $(el.target).context !== "undefined") { // jQuery v1.x.
+                    var target = $(el.target).context;
+                } else if (typeof $(el.target) !== "undefined") { // jQuery v3.x
+                    var target = $(el.target)[0];
+                } else {
+                    throw "Answer could not be found... Changing your jQuery Version could help..."
+                }
                 this.answer(target.id.substr( this.configuration.ids.answerPrefix.length ), target.innerHTML);
             }.bind(this));
 
