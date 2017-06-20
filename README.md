@@ -1,5 +1,13 @@
 # js-site-chat-bot
 
+## Description
+
+A special way to bind the customer to your page. 
+Let them chat with a javascript chat bot alternative. 
+They will likely click on a predefined answer, than typing any text messages... 
+
+Start enhancing your customers experience and let your visitors believe they are chatting with you - live! 
+
 ## Project Page
 
 This Script has an own [Project Page](https://andreaspabst.github.io/js-site-chat-bot/).  
