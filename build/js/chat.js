@@ -1,10 +1,41 @@
+/**
+ * @author Andreas Pabst <kontakt@andreas-pabst.de>
+ * @version 1.0.2
+ *
+ * JS Site Chat Bot Script enhancing user experience
+ * @module andreaspabst/js-site-chat-bot
+ * @license MIT
+ * Copyright 2017 Andreas Pabst
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+     documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+     copies of the Software, and to permit persons to whom the Software is furnished to
+     do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+     WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+     DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+
+/**
+ * JS Site Chat Bot Script by andreas pabst
+ * @returns {{}}
+ * @constructor
+ */
 function Chat() {
     var obj = {};
 
     /********* VARIABLES ****************/
 
-    obj.debug = false;   // debug console.log
-    obj.talk = {};       // talk array
+    obj.debug = false;     // debug console.log
+    obj.talk = {};         // talk array
+    obj.version = "1.0.2"; // current version of chat js
 
     obj.configuration = {
         behaviour: {
@@ -59,34 +90,51 @@ function Chat() {
      * Initialize Chat
      */
     obj.init = function(params) {
-        // some variables
-        var that = this;
+        // check requirement: jquery
+        if (typeof jQuery == 'undefined') {
+            throw "Error: jQuery is required but not loaded."; return false;
+        }
+        // check requirement: config params
+        if (typeof params === "undefined") {
+            throw "Error: No configuration found. Either pass ajax parameter or whole settings"; return false;
+        }
 
         // define browser language
         this.browserLanguage = navigator.language || navigator.userLanguage;
 
         // if ajax is set as configuration source it will overwrite all other settings
         if (typeof params.ajax !== "undefined") {
+            this.chatLog("Fetching ajax settings...");
             $.getJSON( params.ajax, function(json) {
                 // fetch all settings
-                that.parseSettings(json);
+                this.parseSettings(json);
 
                 // generate html framework
-                that.generateHtml();
+                this.generateHtml();
 
                 // parse talking messages
-                that.parseTalks(json);
+                this.parseTalks(json);
 
                 // start talking
-                setTimeout(function() { that.botTalks(); }, that.configuration.times.delay.overall)
-            });
+                setTimeout(function() { this.botTalks(); }.bind(this), this.configuration.times.delay.overall)
+            }.bind(this));
+        } else {
+            this.chatLog("Using settings passed by parameter...");
+            // fetch all settings
+            this.parseSettings(params);
+
+            // generate html framework
+            this.generateHtml();
+
+            // parse talking messages
+            this.parseTalks(params);
+
+            // start talking
+            setTimeout(function() { this.botTalks(); }.bind(this), this.configuration.times.delay.overall)
         }
     }
 
     obj.parseSettings = function(json) {
-        // some variables
-        var that = this;
-
         // Parse JSON config to Chat() config
         if (typeof json !== "undefined") {
 
@@ -101,48 +149,48 @@ function Chat() {
                 // Apply behaviour settings
                 if (typeof json.config.behaviour !== "undefined") {
                     $.each(json.config.behaviour, function (k, v) {
-                        if (typeof that.configuration.behaviour[k] !== "undefined") {
-                            that.configuration.behaviour[k] = v;
+                        if (typeof this.configuration.behaviour[k] !== "undefined") {
+                            this.configuration.behaviour[k] = v;
                         }
-                    })
+                    }.bind(this))
                 }
 
                 // Apply css class settings
                 if (typeof json.config.classes !== "undefined") {
                     $.each(json.config.classes, function (k, v) {
-                        if (typeof that.configuration.classes[k] !== "undefined") {
-                            that.configuration.classes[k] = v;
+                        if (typeof this.configuration.classes[k] !== "undefined") {
+                            this.configuration.classes[k] = v;
                         }
-                    })
+                    }.bind(this))
                 }
 
                 // Apply html ID settings
                 if (typeof json.config.ids !== "undefined") {
                     $.each(json.config.ids, function (k, v) {
-                        if (typeof that.configuration.ids[k] !== "undefined") {
-                            that.configuration.ids[k] = v;
+                        if (typeof this.configuration.ids[k] !== "undefined") {
+                            this.configuration.ids[k] = v;
                         }
-                    })
+                    }.bind(this))
                 }
 
                 // Parse times config section if available
                 if (typeof json.config.times !== "undefined") {
                     $.each( json.config.times, function(section,variables) {
                         $.each(variables, function (k, v) {
-                            if (typeof that.configuration.times[section][k] !== "undefined") {
+                            if (typeof this.configuration.times[section][k] !== "undefined") {
                                 if (v >= 0) {
-                                    that.configuration.times[section][k] = v;
+                                    this.configuration.times[section][k] = v;
                                 } else {
-                                    throw "A configuration value for times."+section+"."+k+" < 0 is not allowed";
+                                    throw "Error: A configuration value for times."+section+"."+k+" < 0 is not allowed";
                                 }
                             }
-                        })
-                    })
+                        }.bind(this))
+                    }.bind(this))
                 }
             }
         } else {
             // no json settings found, aborting..
-            throw "JSON settings not found..";
+            throw "Error: JSON settings not found..";
             return false;
         }
 
@@ -187,26 +235,26 @@ function Chat() {
             if (this.configuration.behaviour.useLanguages == true && this.usedLang != "") {
                 // Check if localized talk array exists
                 if (typeof json.talk[this.usedLang] === "undefined") {
-                    throw "Language '"+this.usedLang+"' could not be found...";
+                    throw "Error: Language '"+this.usedLang+"' could not be found...";
                 }
 
                 // Look for 'init' in actual set language
                 if (typeof json.talk[this.usedLang].init !== "undefined") {
                     this.talk = json.talk[this.usedLang];
-                    this.chatLog("Lanugage found");
+                    this.chatLog("Language found");
                 } else {
-                    throw "There is no init point for talk in language "+this.usedLang+"...";
+                    throw "Error: There is no init point for talk in language "+this.usedLang+"...";
                 }
             } else {
                 // Look for 'init' in default single language talk
                 if (typeof json.talk.init !== "undefined") {
                     this.talk = json.talk;
                 } else {
-                    throw "There is no init point for talk...";
+                    throw "Error: There is no init point for talk...";
                 }
             }
         } else {
-            throw "There is no talk declaration in JSON file...";
+            throw "Error: There is no talk declaration in JSON file...";
         }
     }
 
@@ -217,7 +265,7 @@ function Chat() {
             var $answerWrap = '<div class="'+this.configuration.classes.answerWrap+'"></div>';
             $("#"+this.configuration.ids.mainChat).append($chatWrap, $answerWrap);
         } else {
-            throw "Container #"+this.configuration.ids.mainChat+" not found.";
+            throw "Error: Container #"+this.configuration.ids.mainChat+" not found.";
             return false;
         }
 
@@ -231,18 +279,17 @@ function Chat() {
      */
     obj.botTalks = function() {
         this.chatLog("- Bot starts talking on "+this.talkPosition+"..");
-        var that = this;
         if (typeof this.talk[this.talkPosition] !== "undefined") {
             if (typeof this.talk[this.talkPosition].talks !== "undefined") {
                 this.talk[this.talkPosition].talks.forEach( function(msg, i) {
-                    var timeDelay = that.configuration.times.delay.dots +
-                        that.configuration.times.delay.botsTalk * (i+1);
+                    var timeDelay = this.configuration.times.delay.dots +
+                        this.configuration.times.delay.botsTalk * (i+1);
                     setTimeout(function() {
-                        that.newChatBubble( "bot", msg )
-                    }, timeDelay);
-                });
+                        this.newChatBubble( "bot", msg )
+                    }.bind(this), timeDelay);
+                }.bind(this));
             } else {
-                throw "No bot talks found";
+                throw "Error: No bot talks found";
             }
         } else {
             this.chatLog(" - No more answers available");
@@ -254,22 +301,22 @@ function Chat() {
             * (this.configuration.times.delay.botsTalk + this.configuration.times.delay.dots))
             + this.configuration.times.delay.showAnswer);
         setTimeout(function () {
-            that.showAnswers();
-            if (that.configuration.behaviour.autoScroll == true) {
-                if (that.configuration.behaviour.autoScrollAfterFirstAnswer == true) {
+            this.showAnswers();
+            if (this.configuration.behaviour.autoScroll == true) {
+                if (this.configuration.behaviour.autoScrollAfterFirstAnswer == true) {
                     // Don't do scrolling if it's first reply
-                    if (that.talkPosition == "init") {
-                        that.chatLog("Skip scrolling on first reply..");
+                    if (this.talkPosition == "init") {
+                        this.chatLog("Skip scrolling on first reply..");
                         return false;
                     }
                 }
                 // Do an autoscroll
-                that.chatLog("Scrolling...");
+                this.chatLog("Scrolling...");
                 $("body").animate({
-                    scrollTop: $("."+that.configuration.classes.bubble+":last-of-type").position().top
+                    scrollTop: $("."+this.configuration.classes.bubble+":last-of-type").position().top
                 }, this.configuration.times.scrollingSpeed);
             }
-        }, timeDelay);
+        }.bind(this), timeDelay);
     }
 
     /**
@@ -281,7 +328,6 @@ function Chat() {
         this.chatLog("- -- * Add new Bubble for "+who+" with "+text);
 
         // Define variables
-        var that = this;
         var bubbleClass = (who == "bot") ? this.configuration.classes.bubbleBot : this.configuration.classes.bubbleVisitor;
         var initialContent = (this.configuration.behaviour.showTypingDots) ? "..." : this.formatContent(text);
         var $chatBlock = $("<div class='"+this.configuration.classes.bubbleWrap+"'><div class='"+this.configuration.classes.bubble+" "+bubbleClass+"'>"+initialContent+"</div></div>");
@@ -300,10 +346,11 @@ function Chat() {
         // If using typing dots, hide box, replace text and fadeIn again
         if (this.configuration.behaviour.showTypingDots) {
             setTimeout(function () {
-                $chatBlock.find("." + that.configuration.classes.bubble + "").fadeOut(that.configuration.times.speed.dotsFadeInOut, function () {
-                    $(this).html(that.formatContent(text)).fadeIn(that.configuration.times.speed.dotsFadeInOut);
+                var chatApp = this; // its non sense to bind this here.. it would overwrite $(this)
+                $chatBlock.find("." + chatApp.configuration.classes.bubble + "").fadeOut(chatApp.configuration.times.speed.dotsFadeInOut, function () {
+                    $(this).html(chatApp.formatContent(text)).fadeIn(chatApp.configuration.times.speed.dotsFadeInOut);
                 });
-            }, this.configuration.times.delay.dots);
+            }.bind(this), this.configuration.times.delay.dots);
         }
     }
 
@@ -314,7 +361,6 @@ function Chat() {
         this.chatLog("- Show answers for "+this.talkPosition+"...");
 
         // Define some variables
-        var that = this;
         var answerContent = "";
 
         // Check if this talk position exists and has answers
@@ -326,15 +372,21 @@ function Chat() {
 
             // Loop through the answers and generate answerWrap content
             this.talk[this.talkPosition].answers.forEach(function(answer, i) {
-                that.chatLog("- -- - "+answer);
-                answerContent = answerContent + "<a href='javascript:;' class='"+that.configuration.classes.answer+"' id='"+that.configuration.ids.answerPrefix+""+i+"'>"+that.formatContent(answer)+"</a>";
-            });
+                this.chatLog("- -- - "+answer);
+                answerContent = answerContent + "<a href='javascript:;' class='"+this.configuration.classes.answer+"' id='"+this.configuration.ids.answerPrefix+""+i+"'>"+this.formatContent(answer)+"</a>";
+            }.bind(this));
 
             // Generate answer elements with onclick function
             var $answerElem = $("<div>"  + answerContent + "</div>").click(function(el) {
-                var target = $(el.target).context;
-                that.answer(target.id.substr( that.configuration.ids.answerPrefix.length ), target.innerHTML);
-            });
+                if (typeof $(el.target).context !== "undefined") { // jQuery v1.x.
+                    var target = $(el.target).context;
+                } else if (typeof $(el.target) !== "undefined") { // jQuery v3.x
+                    var target = $(el.target)[0];
+                } else {
+                    throw "Answer could not be found... Changing your jQuery Version could help..."
+                }
+                this.answer(target.id.substr( this.configuration.ids.answerPrefix.length ), target.innerHTML);
+            }.bind(this));
 
             // Append answerWrap content to answerWrap
             $("."+this.configuration.classes.answerWrap).append($answerElem);
@@ -363,7 +415,7 @@ function Chat() {
         if (typeof this.talk[this.talkPosition].next[answerIndex] !== "undefined") {
             next = this.talk[this.talkPosition].next[answerIndex];
         } else {
-            throw "There is no answer for "+answerIndex+" in "+this.talkPosition;
+            throw "Error: There is no answer for "+answerIndex+" in "+this.talkPosition;
         }
 
         // Debugging reason
@@ -405,23 +457,33 @@ function Chat() {
     obj.formatContent = function(text) {
         // format input fields
         var inputRegex = /:input:([A-z]+):/;
-        inputFields = inputRegex.exec(text);
-        if (inputFields != null) {
-            text = text.replace(inputFields[0], '<input type="text" name="'+inputFields[1]+'" placeholder="Start typing...">');
+        while ((inputFields = inputRegex.exec(text)) !== null) {
+            if (inputFields != null) {
+                text = text.replace(inputFields[0], '<input type="text" name="'+inputFields[1]+'" placeholder="Start typing...">');
+            }
         }
 
-        // format links
-        // var aRegex = /:url:([A-z:_-\/]+):/;
-        // inputFields = inputRegex.exec(text);
-        // if (inputFields != null) {
-        //     text = text.replace(inputFields[0], '<input type="text" name="'+inputFields[1]+'" placeholder="Start typing...">');
-        // }
+        // format links look like [text 123](link "title")
+        var aRegex = /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+) \"([\w\s\-\'\=\#\+]+)\"\)/;
+        while ((links = aRegex.exec(text)) !== null) {
+            if (links != null && typeof links[1] !== "undefined" && typeof links[2] !== "undefined" && typeof links[3] !== "undefined") {
+                text = text.replace(links[0], "<a href=\""+links[2]+"\" title=\""+links[3]+"\" target=\"_blank\">"+links[1]+"</a> ");
+            }
+        }
+
+        // format links look like [text 123](link)
+        var aRegex = /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+)\)/;
+        while ((links = aRegex.exec(text)) !== null) {
+            if (links != null && typeof links[1] !== "undefined" && typeof links[2] !== "undefined") {
+                console.log(links);
+                text = text.replace(links[0], "<a href=\""+links[2]+"\" target=\"_blank\">"+links[1]+"</a> ");
+            }
+        }
 
         // format emojis
         if (this.configuration.behaviour.useEmoji == true) {
             var emojiRegex = /:emoji:([A-z]+):/;
-            emojiFields = emojiRegex.exec(text);
-            if (emojiFields  != null) {
+            while (emojiFields = emojiRegex.exec(text) !== null) {
                 text = text.replace(emojiFields[0], '<i class="'+this.configuration.classes.emojiPrefix+'-'+emojiFields[1]+'"></i>');
             }
         }
