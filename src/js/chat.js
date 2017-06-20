@@ -432,23 +432,33 @@ function Chat() {
     obj.formatContent = function(text) {
         // format input fields
         var inputRegex = /:input:([A-z]+):/;
-        inputFields = inputRegex.exec(text);
-        if (inputFields != null) {
-            text = text.replace(inputFields[0], '<input type="text" name="'+inputFields[1]+'" placeholder="Start typing...">');
+        while ((inputFields = inputRegex.exec(text)) !== null) {
+            if (inputFields != null) {
+                text = text.replace(inputFields[0], '<input type="text" name="'+inputFields[1]+'" placeholder="Start typing...">');
+            }
         }
 
-        // format links
-        // var aRegex = /:url:([A-z:_-\/]+):/;
-        // inputFields = inputRegex.exec(text);
-        // if (inputFields != null) {
-        //     text = text.replace(inputFields[0], '<input type="text" name="'+inputFields[1]+'" placeholder="Start typing...">');
-        // }
+        // format links look like [text 123](link "title")
+        var aRegex = /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+) \"([\w\s\-\'\=\#\+]+)\"\)/;
+        while ((links = aRegex.exec(text)) !== null) {
+            if (links != null && typeof links[1] !== "undefined" && typeof links[2] !== "undefined" && typeof links[3] !== "undefined") {
+                text = text.replace(links[0], "<a href=\""+links[2]+"\" title=\""+links[3]+"\" target=\"_blank\">"+links[1]+"</a> ");
+            }
+        }
+
+        // format links look like [text 123](link)
+        var aRegex = /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+)\)/;
+        while ((links = aRegex.exec(text)) !== null) {
+            if (links != null && typeof links[1] !== "undefined" && typeof links[2] !== "undefined") {
+                console.log(links);
+                text = text.replace(links[0], "<a href=\""+links[2]+"\" target=\"_blank\">"+links[1]+"</a> ");
+            }
+        }
 
         // format emojis
         if (this.configuration.behaviour.useEmoji == true) {
             var emojiRegex = /:emoji:([A-z]+):/;
-            emojiFields = emojiRegex.exec(text);
-            if (emojiFields  != null) {
+            while (emojiFields = emojiRegex.exec(text) !== null) {
                 text = text.replace(emojiFields[0], '<i class="'+this.configuration.classes.emojiPrefix+'-'+emojiFields[1]+'"></i>');
             }
         }
