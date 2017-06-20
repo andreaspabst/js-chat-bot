@@ -10,12 +10,19 @@ Start enhancing your customers experience and let your visitors believe they are
 
 ## Project Page & Support
 
-This Script has an own [Project Page](https://andreaspabst.github.io/js-site-chat-bot/).
+This Script has an own [Project Page](https://andreaspabst.github.io/js-chat-bot/).
 I've used this tool on my Website [Andreas Pabst Webentwickler Nürnberg](http://www.andreas-pabst.de).
 
 ## Wiki
 
-Here [in the wiki](https://github.com/andreaspabst/js-site-chat-bot/wiki) you can find the installation guide .
+Here [in the Javascript Chat Bot Wiki](https://github.com/andreaspabst/js-chat-bot/wiki) you can find the installation guide .
+
+## Versions
+
+- 1.0.0 - Initial Version
+- 1.0.1 - Added Emoji Support
+- 1.0.2 - Added URL
+- 1.0.3 - Documentation Updates
 
 ## Available Configurations
 
@@ -65,7 +72,7 @@ configuration = {
 
 Include Chat Bot JS in your page footer. Please be sure to include jQuery before including js-site-chat-bot.
 
-`<script src="https://cdn.rawgit.com/andreaspabst/js-site-chat-bot/master/build/js/chat-min.js"></script>`
+`<script src="https://cdn.rawgit.com/andreaspabst/js-chat-bot/master/build/js/chat-min.js"></script>`
 
 Initialize the script by using the following element:
 ```html

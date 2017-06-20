@@ -15,6 +15,8 @@
     "gulp-rename": "^1.2.2",
     "gulp-concat": "^2.6.1",
     "gulp-sourcemaps": "^2.4.0",
+    "gulp-minify": "*",
+    "gulp-copy": "*",
     "gulp-uglify": "^2.0.0",
     "gulp-sass": "^3.1.0",
     "gulp-cache": "^0.4.5"
