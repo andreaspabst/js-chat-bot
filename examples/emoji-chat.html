@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: "Helvetica Neue";
+            font-size: 16px;
+        }
+
+        #chat {
+            width: 300px;
+        }
+
+        .chat-bubble {
+            clear: both;
+            min-width: 1px;
+        }
+
+        .chat-bubble-msg {
+            margin-bottom: 6px;
+            padding: 4px;
+        }
+
+        .chat-bubble-msg-me {
+            background-color: #ccc;
+            display: table;
+        }
+
+        .chat-bubble-msg-visitor {
+            display: table;
+            background-color: #555;
+            color: #fff;
+            float: right;
+        }
+
+        .chat-bubble-msg-visitor::after {
+            clear: both;
+        }
+
+        .chat-answer-select {
+            margin-top: 14px;
+        }
+
+        .chat-answer:link, .chat-answer:visited {
+            background-color: #555;
+            text-decoration: none;
+            color: #fff;
+            padding: 4px;
+            margin-right: 3px;
+        }
+
+        .chat-answer:hover, .chat-answer:active {
+            background-color: #0099CC;
+        }
+    </style>
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+    <title>Simple Chat</title>
+</head>
+<body>
+<h1>Chat</h1>
+<p>This example shows a simple way of adding Chat Plugin to your site.</p>
+<div id="chat"></div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="../src/js/chat.js"></script>
+<script type="text/javascript">
+    var chat = new Chat();
+    var settings = {
+        config: {
+            debug: false,
+            behaviour: {
+                showTypingDots: false
+            }
+        }, talk: {
+            init: {
+                talks: ["Hello :emoji:smile: World","I can use smilies...","Include this source [afeld emoji css](https://github.com/afeld/emoji-css)"],
+                answers: ["Okay"],
+                next: []
+            }
+        }
+    };
+    chat.init(settings);
+</script>
+</html>

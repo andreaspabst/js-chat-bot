@@ -1,6 +1,6 @@
 /**
  * @author Andreas Pabst <kontakt@andreas-pabst.de>
- * @version 1.0.3
+ * @version 1.0.4
  *
  * JS Site Chat Bot Script enhancing user experience
  * @module andreaspabst/js-site-chat-bot
@@ -35,7 +35,7 @@ function Chat() {
 
     obj.debug = false;     // debug console.log
     obj.talk = {};         // talk array
-    obj.version = "1.0.3"; // current version of chat js
+    obj.version = "1.0.4"; // current version of chat js
 
     obj.configuration = {
         behaviour: {
@@ -483,7 +483,9 @@ function Chat() {
         // format emojis
         if (this.configuration.behaviour.useEmoji == true) {
             var emojiRegex = /:emoji:([A-z]+):/;
-            while (emojiFields = emojiRegex.exec(text) !== null) {
+            console.log("hi");
+            while ((emojiFields = emojiRegex.exec(text)) !== null) {
+                if (emojiFields != null && typeof emojiFields[0] !== "undefined" && typeof emojiFields[1] !== "undefined")
                 text = text.replace(emojiFields[0], '<i class="'+this.configuration.classes.emojiPrefix+'-'+emojiFields[1]+'"></i>');
             }
         }

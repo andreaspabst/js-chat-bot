@@ -23,6 +23,7 @@ Here [in the Javascript Chat Bot Wiki](https://github.com/andreaspabst/js-chat-b
 - 1.0.1 - Added Emoji Support
 - 1.0.2 - Added URL
 - 1.0.3 - Documentation Updates
+- 1.0.4 - Emoji improvements
 
 ## Available Configurations
 
