@@ -1,10 +1,41 @@
+/**
+ * @author Andreas Pabst <kontakt@andreas-pabst.de>
+ * @version 1.0.2
+ *
+ * JS Site Chat Bot Script enhancing user experience
+ * @module andreaspabst/js-site-chat-bot
+ * @license MIT
+ * Copyright 2017 Andreas Pabst
+
+     Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+     documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+     rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+     copies of the Software, and to permit persons to whom the Software is furnished to
+     do so, subject to the following conditions:
+
+     The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+     WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+     IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+     DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+
+/**
+ * JS Site Chat Bot Script by andreas pabst
+ * @returns {{}}
+ * @constructor
+ */
 function Chat() {
     var obj = {};
 
     /********* VARIABLES ****************/
 
-    obj.debug = false;   // debug console.log
-    obj.talk = {};       // talk array
+    obj.debug = false;     // debug console.log
+    obj.talk = {};         // talk array
+    obj.version = "1.0.2"; // current version of chat js
 
     obj.configuration = {
         behaviour: {
@@ -89,19 +120,13 @@ function Chat() {
             }.bind(this));
         } else {
             this.chatLog("Using settings passed by parameter...");
-            // walk through settings parameter and their sub params if applicable
-            // $.each(params, function (mainKey, sections) {
-            //     // overwrite default configuration
-            //     if (typeof this.configuration[mainKey] !== "undefined") {
-            //         $.each(sections, function(subSection, value) {
-            //             if (typeof this.configuration[mainKey][subSection] !== "undefined") {
-            //                 this.configuration[mainKey][subSection] = value;
-            //             }
-            //         }.bind(this));
-            //     }
-            // }.bind(this));
+            // fetch all settings
             this.parseSettings(params);
+
+            // generate html framework
             this.generateHtml();
+
+            // parse talking messages
             this.parseTalks(params);
 
             // start talking
