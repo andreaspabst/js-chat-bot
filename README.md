@@ -8,9 +8,10 @@ They will likely click on a predefined answer, than typing any text messages...
 
 Start enhancing your customers experience and let your visitors believe they are chatting with you - live! 
 
-## Project Page
+## Project Page & Support
 
-This Script has an own [Project Page](https://andreaspabst.github.io/js-site-chat-bot/).  
+This Script has an own [Project Page](https://andreaspabst.github.io/js-site-chat-bot/).
+I've used this tool on my Website [Andreas Pabst Webentwickler Nürnberg](http://www.andreas-pabst.de).
 
 ## Wiki
 
