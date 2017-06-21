@@ -1,4 +1,4 @@
-# js-site-chat-bot
+# js-chat-bot
 
 ## Description
 
