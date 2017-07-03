@@ -1,6 +1,6 @@
 /**
  * @author Andreas Pabst <kontakt@andreas-pabst.de>
- * @version 1.0.4
+ * @version 1.0.6
  *
  * JS Site Chat Bot Script enhancing user experience
  * @module andreaspabst/js-site-chat-bot
@@ -35,7 +35,7 @@ function Chat() {
     obj.formData = {};
     obj.debug = false;     // debug console.log
     obj.talk = {};         // talk array
-    obj.version = "1.0.5"; // current version of chat js
+    obj.version = "1.0.6"; // current version of chat js
 
     obj.regex = {
         // format input fields
