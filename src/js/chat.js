@@ -32,10 +32,21 @@ function Chat() {
     var obj = {};
 
     /********* VARIABLES ****************/
-
+    obj.formData = {};
     obj.debug = false;     // debug console.log
     obj.talk = {};         // talk array
     obj.version = "1.0.4"; // current version of chat js
+
+    obj.regex = {
+        // format input fields
+        input: /:input:([A-z]+):/,
+        // format links look like [text 123](link "title")
+        linkLg: /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+) \"([\w\s\-\'\=\#\+]+)\"\)/,
+        // format links look like [text 123](link)
+        linkSm: /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+)\)/,
+        // format emojis
+        emoji: /:emoji:([A-z]+):/
+    };
 
     obj.configuration = {
         behaviour: {
@@ -48,6 +59,10 @@ function Chat() {
             useEmoji: true,                    // :emoji:xyz: is an emoji with name xyz
             useInputs: true,                   // :input:xyz: is a text input with name xyz
             useLanguages: false                // parse talks with languages
+        },
+        formPost: {
+            ajaxUrl: "",
+            ajaxType: "POST"
         },
         ids: {
             mainChat: "chat",        // the chat container, with chatWrap and answerWrap
@@ -151,6 +166,15 @@ function Chat() {
                     $.each(json.config.behaviour, function (k, v) {
                         if (typeof this.configuration.behaviour[k] !== "undefined") {
                             this.configuration.behaviour[k] = v;
+                        }
+                    }.bind(this))
+                }
+
+                // Apply formPost settings
+                if (typeof json.config.formPost !== "undefined") {
+                    $.each(json.config.formPost, function (k, v) {
+                        if (typeof this.configuration.formPost[k] !== "undefined") {
+                            this.configuration.formPost[k] = v;
                         }
                     }.bind(this))
                 }
@@ -385,8 +409,34 @@ function Chat() {
                 } else {
                     throw "Answer could not be found... Changing your jQuery Version could help..."
                 }
+
+                // do nothing if the clicked element is an input
+                if ($(target).prop("tagName").toLowerCase() == "input") {
+                    this.chatLog("You have clicked into an input element.."); return false;
+                }
+
+                // if the answer has an input field do nothing,... only enter makes sense
+                if ($(target).has("input").length > 0) { this.chatLog("There is an input.. Only enter works"); return false; }
+
+                // do the usual answer stuff
                 this.answer(target.id.substr( this.configuration.ids.answerPrefix.length ), target.innerHTML);
+            }.bind(this)).keyup(function(event) {
+                if (event.keyCode == 13) { // enter
+                    // store values
+                    var inputValue = event.target.value.replace(/<(?:.|\n)*?>/gm, '');
+                    var inputName = event.target.name;
+
+                    // add the entered data to temporarily form object
+                    this.chatLog("Add new details to form object: "+inputName+" = "+inputValue);
+                    this.formData[inputName] = inputValue;
+
+                    // replace input field with form value and fake a click on the link object
+                    var parent = $(event.target.parentNode);
+                    $(event.target).replaceWith(inputValue);
+                    parent.trigger("click");
+                }
             }.bind(this));
+
 
             // Append answerWrap content to answerWrap
             $("."+this.configuration.classes.answerWrap).append($answerElem);
@@ -409,6 +459,8 @@ function Chat() {
     obj.answer = function(answerIndex, content) {
         // Callback function after user selected answer
         var next = "";
+
+        console.log(this.talk[this.talkPosition].answers[answerIndex]);
 
         // Check if the current talk position and the answerIndex exists
         if (typeof this.talk[this.talkPosition] === "undefined") { return false; }
@@ -456,24 +508,21 @@ function Chat() {
      */
     obj.formatContent = function(text) {
         // format input fields
-        var inputRegex = /:input:([A-z]+):/;
-        while ((inputFields = inputRegex.exec(text)) !== null) {
+        while ((inputFields = this.regex.input.exec(text)) !== null) {
             if (inputFields != null) {
                 text = text.replace(inputFields[0], '<input type="text" name="'+inputFields[1]+'" placeholder="Start typing...">');
             }
         }
 
         // format links look like [text 123](link "title")
-        var aRegex = /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+) \"([\w\s\-\'\=\#\+]+)\"\)/;
-        while ((links = aRegex.exec(text)) !== null) {
+        while ((links = this.regex.linkLg.exec(text)) !== null) {
             if (links != null && typeof links[1] !== "undefined" && typeof links[2] !== "undefined" && typeof links[3] !== "undefined") {
                 text = text.replace(links[0], "<a href=\""+links[2]+"\" title=\""+links[3]+"\" target=\"_blank\">"+links[1]+"</a> ");
             }
         }
 
         // format links look like [text 123](link)
-        var aRegex = /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+)\)/;
-        while ((links = aRegex.exec(text)) !== null) {
+        while ((links = this.regex.linkSm.exec(text)) !== null) {
             if (links != null && typeof links[1] !== "undefined" && typeof links[2] !== "undefined") {
                 console.log(links);
                 text = text.replace(links[0], "<a href=\""+links[2]+"\" target=\"_blank\">"+links[1]+"</a> ");
@@ -482,12 +531,21 @@ function Chat() {
 
         // format emojis
         if (this.configuration.behaviour.useEmoji == true) {
-            var emojiRegex = /:emoji:([A-z]+):/;
-            console.log("hi");
-            while ((emojiFields = emojiRegex.exec(text)) !== null) {
+            while ((emojiFields = this.regex.emoji.exec(text)) !== null) {
                 if (emojiFields != null && typeof emojiFields[0] !== "undefined" && typeof emojiFields[1] !== "undefined")
                 text = text.replace(emojiFields[0], '<i class="'+this.configuration.classes.emojiPrefix+'-'+emojiFields[1]+'"></i>');
             }
+        }
+
+        // if there is the :submit: keyword in the text, remove it and submit this.formData to ajax url
+        if (text.indexOf(":submit:") >= 0) {
+            text = text.replace(":submit:", "");
+            $.ajax({
+                type: this.configuration.formPost.ajaxType,
+                url: this.configuration.formPost.ajaxUrl,
+                data: this.formData,
+                success: function(data) { console.log(data); console.log("Erfolg"); }
+            })
         }
 
         return text;

@@ -178,6 +178,7 @@ configuration = {
                 "scrollingSpeed": 700   // speed for scrollTo()
             }
         }
+    }
 ```
 
 ## Writing a conversation
