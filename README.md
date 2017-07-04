@@ -275,6 +275,22 @@ You may also use emojis in a conversation. To use them, you have to enable emoji
 
 Usage: In any bot message or answer, just use :emoji:XYZ: which will be transformed into an italic element `<i class="em em-XYZ"></i>`. You are able to change the emoji class by defining the following setup in the config tree `config.classes.emojiPrefix`.
 
+## Using wait in bubbles
+By adding `:wait:0-9:` (e.g. `:wait:3000:` for 3 seconds), the ChatBot will wait the amount of milliseconds.
+
+## Input values
+By adding `:input:a-Z:` to answers, an input field is displayed. The value is stored in the given parameter.
+An example: The input by using `:input:foo:` is stored in *foo*. To retrieve values see the next chapter.
+If the answer has an input field, the default event is prevented (clicks don't work, only enter).
+ 
+## Display values
+By adding `:output:a-Z:` to talk, a previous entered input value is displayed (if given).
+If you've stored a value in *foo*, you can retrieve it by `:output:foo:`.
+
+## Submitting all values
+If you asked the user to enter values, e.g. by adding `:input:a-Z:`, you can submit all previous entered values by adding `:submit:` anywhere in the chat.
+Make sure you've defined a `configuration.formPost.ajaxUrl` in the configuration section. 
+
 ## License
 
 Copyright 2017 Andreas Pabst

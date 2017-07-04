@@ -39,15 +39,17 @@ function Chat() {
 
     obj.regex = {
         // format input fields
-        input: /:input:([A-z]+):/,
-        // format input fields
+        input:  /:input:([A-z]+):/,
+        // format output
         output: /:output:([A-z]+):/,
+        // wait function - window.set timeout
+        wait:   /:wait:([0-9]+):/,
         // format links look like [text 123](link "title")
         linkLg: /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+) \"([\w\s\-\'\=\#\+]+)\"\)/,
         // format links look like [text 123](link)
         linkSm: /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+)\)/,
         // format emojis
-        emoji: /:emoji:([A-z]+):/
+        emoji:  /:emoji:([A-z]+):/
     };
 
     obj.configuration = {
@@ -305,11 +307,24 @@ function Chat() {
      */
     obj.botTalks = function() {
         this.chatLog("- Bot starts talking on "+this.talkPosition+"..");
+        var timeShiftByWait = 0; // if there is :wait:0-9: in the message
         if (typeof this.talk[this.talkPosition] !== "undefined") {
             if (typeof this.talk[this.talkPosition].talks !== "undefined") {
                 this.talk[this.talkPosition].talks.forEach( function(msg, i) {
-                    var timeDelay = this.configuration.times.delay.dots +
-                        this.configuration.times.delay.botsTalk * (i+1);
+                    // look for :wait:0-9: in message
+                    while ((wait = this.regex.wait.exec(msg)) !== null) {
+                        if (wait != null) {
+                            // add time amount to shift variable and remove :wait:0-9: text
+                            msg = msg.replace(wait[0], '');
+                            timeShiftByWait = timeShiftByWait + parseInt(wait[1]);
+                        }
+                    }
+
+                    // calculate time delayed between each bubble
+                    var timeDelay = (this.configuration.times.delay.dots +
+                        this.configuration.times.delay.botsTalk * (i+1)) + timeShiftByWait;
+
+                    // spawn new chat bubble after timeDelay
                     setTimeout(function() {
                         this.newChatBubble( "bot", msg )
                     }.bind(this), timeDelay);
@@ -325,7 +340,7 @@ function Chat() {
         // Show answers after the last chat bubble has been loaded
         var timeDelay = ((this.talk[this.talkPosition].talks.length
             * (this.configuration.times.delay.botsTalk + this.configuration.times.delay.dots))
-            + this.configuration.times.delay.showAnswer);
+            + this.configuration.times.delay.showAnswer) + timeShiftByWait;
         setTimeout(function () {
             this.showAnswers();
             if (this.configuration.behaviour.autoScroll == true) {
