@@ -1,6 +1,6 @@
 /**
  * @author Andreas Pabst <kontakt@andreas-pabst.de>
- * @version 1.0.6
+ * @version 1.0.7
  *
  * JS Site Chat Bot Script enhancing user experience
  * @module andreaspabst/js-site-chat-bot
@@ -35,11 +35,13 @@ function Chat() {
     obj.formData = {};
     obj.debug = false;     // debug console.log
     obj.talk = {};         // talk array
-    obj.version = "1.0.6"; // current version of chat js
+    obj.version = "1.0.7"; // current version of chat js
 
     obj.regex = {
         // format input fields
         input: /:input:([A-z]+):/,
+        // format input fields
+        output: /:output:([A-z]+):/,
         // format links look like [text 123](link "title")
         linkLg: /\[([\w\s\-\'\=\#\+]+)\]\(([\w\/\.\:\-\?\#\=\%]+) \"([\w\s\-\'\=\#\+]+)\"\)/,
         // format links look like [text 123](link)
@@ -514,6 +516,18 @@ function Chat() {
             }
         }
 
+        // format output of values
+        while ((outputExpression = this.regex.output.exec(text)) !== null) {
+            if (outputExpression != null && typeof outputExpression[1] !== "undefined") {
+                if (typeof this.formData[outputExpression[1]] !== "undefined") {
+                    text = text.replace(outputExpression[0], this.formData[outputExpression[1]]);
+                } else {
+                    text = text.replace(outputExpression[0], "");
+                    throw "There is no value matching "+outputExpression[0];
+                }
+            }
+        }
+
         // format links look like [text 123](link "title")
         while ((links = this.regex.linkLg.exec(text)) !== null) {
             if (links != null && typeof links[1] !== "undefined" && typeof links[2] !== "undefined" && typeof links[3] !== "undefined") {
@@ -524,7 +538,6 @@ function Chat() {
         // format links look like [text 123](link)
         while ((links = this.regex.linkSm.exec(text)) !== null) {
             if (links != null && typeof links[1] !== "undefined" && typeof links[2] !== "undefined") {
-                console.log(links);
                 text = text.replace(links[0], "<a href=\""+links[2]+"\" target=\"_blank\">"+links[1]+"</a> ");
             }
         }
@@ -538,13 +551,15 @@ function Chat() {
         }
 
         // if there is the :submit: keyword in the text, remove it and submit this.formData to ajax url
-        if (text.indexOf(":submit:") >= 0) {
+        if (text.indexOf(":submit:") >= 0 && this.configuration.formPost.ajaxUrl.length >= 1 &&
+            (this.configuration.formPost.ajaxType.toUpperCase() == "POST" ||
+             this.configuration.formPost.ajaxType.toUpperCase() == "GET")) {
             text = text.replace(":submit:", "");
             $.ajax({
                 type: this.configuration.formPost.ajaxType,
                 url: this.configuration.formPost.ajaxUrl,
                 data: this.formData,
-                success: function(data) { console.log(data); console.log("Erfolg"); }
+                success: function(data) { console.log(data); }
             })
         }
 

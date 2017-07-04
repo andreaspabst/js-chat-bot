@@ -12,6 +12,13 @@
             width: 300px;
         }
 
+        input {
+            background-color: transparent;
+            border: 0;
+            border-bottom: 1px solid #cccccc;
+            color: #fff;
+        }
+
         .chat-bubble {
             clear: both;
             min-width: 1px;
@@ -84,12 +91,12 @@
                 next: ["myName"]
             },
             myName: {
-                talks: [":submit:My Name is js-site-chat-bot.", "Do you want to try me?"],
+                talks: ["Hi, :output:name:.", "Do you want to go, and fuck yourself?"],
                 answers: ["Yes, sure!"],
                 next: ["git"]
             },
             git: {
-                talks: ["Head over to [My GitHub Profile](https://github.com/andreaspabst/js-site-chat-bot)"]
+                talks: [":submit:Nice..."]
             }
         }
     };
